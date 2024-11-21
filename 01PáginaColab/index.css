@@ -1,0 +1,86 @@
+body{
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+header{
+    text-align: center;
+    background-color: #3498db;
+    color: white;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+
+}
+.boton1 {
+
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #2980b9;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.boton1:hover {
+    background-color: #1f6f8b;
+}
+
+.boton2 {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #2980b9;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.boton2:hover {
+    background-color: #1f6f8b;
+}
+.boton3{
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #2980b9;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.boton3 {
+    background-color: #1f6f8b;
+}
+.boton4{
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #2980b9;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.boton4 {
+    background-color: #1f6f8b;
+}
+.boton5{
+    text-align: center;
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #2980b9;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.boton5 {
+    background-color: #1f6f8b;
+}
