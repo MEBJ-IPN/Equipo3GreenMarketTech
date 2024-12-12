@@ -1,0 +1,375 @@
+import customtkinter as ctk
+import tkinter as tk
+from PIL import Image, ImageTk, ImageOps
+import usuarios
+import variablesGlobales
+import menuVendedor
+from variablesGlobales import ventana
+from tkinter import messagebox
+from tkinter import Toplevel
+import tkinter.ttk as ttk
+from tkvideo import tkvideo
+import listasVendedor
+import os, sys
+import menuDueno, listasDueno
+
+def path(relative_path:str):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+VIDEOSIMON = path("img/videos/simon.mp4")
+
+#Iconos
+flechaIcono = ctk.CTkImage(Image.open(path("img/iconos/flechaIcono.png")), size=(20, 20))
+
+#Funciones
+def inciarInterfaz(ventana):
+    #Frame de inicio
+    pantallaInicio = ctk.CTkFrame(ventana)
+
+    #Img de incio
+    inicioImg= Image.open(path("./img/inicio/inicioImg.png"))
+    inicioImgR = inicioImg.resize((variablesGlobales.ancho_pantalla, variablesGlobales.alto_pantalla))
+    incioImgP = ImageTk.PhotoImage(inicioImgR)
+    backgroundLabel = ctk.CTkLabel(pantallaInicio, image=incioImgP, text="")
+    backgroundLabel.place(anchor="center", relx=0.5, rely=0.5)
+
+    #Btn de incio
+    boton = ctk.CTkButton(pantallaInicio, text="Inicio", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#AEC8C3",
+                          command=lambda: pantallaCuentas(ventana, pantallaInicio) if usuarios.comprobarCu() == True else primerInicioF(ventana, pantallaInicio))
+    boton.place(relx=0.5, rely=0.7, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Iniciar frame de inicio
+    pantallaInicio.pack(fill="both", expand=True)
+    return pantallaInicio
+
+
+#Menu de primer incio
+def primerInicioF(ventana, frameQ):
+    #Funcio para manejar al confirmacion de contraseña universal
+    def manejarConf():
+        contraUniI = contraUniE.get()
+        contraUniIc = contraUniEConf.get()
+        return usuarios.verificarContraseñaU(contraUniI, contraUniIc)
+    
+    #Funcion mostrar error de contraseña universal
+    def errorCu():
+        errorCuL = ctk.CTkLabel(ventana, text="Error, contraseña vacia o confirmacion invalida", text_color="red", font=("Ubuntu", 20), bg_color="#D9D9D9")
+        errorCuL.place(relx=0.5, rely=0.45, anchor="center")
+
+    #Frame primer inicio
+    primerInicio = ctk.CTkFrame(ventana, bg_color="#D9D9D9")
+
+    #Fondo
+    bgCuentasImg = Image.open(path("img/inicio/cuentasImg.png"))
+    bgCuentasR = bgCuentasImg.resize((variablesGlobales.ancho_pantalla, variablesGlobales.alto_pantalla))
+    bgCuentasP = ImageTk.PhotoImage(bgCuentasR)
+    bgCuentasLab = ctk.CTkLabel(primerInicio, image=bgCuentasP, text="", anchor="center")
+    bgCuentasLab.place(relwidth=1, relheight=1, anchor="center", relx=0.5, rely=0.5)
+
+    #Texto
+    textCu = ctk.CTkLabel(primerInicio, text="Ingrese una contraseña unica para el registro de nuevas cuentas \n (Recordar o guardar esta contraseña)", font=("Ubuntu", 30, "bold"), bg_color="#D9D9D9", text_color="black")
+    textCu.place(relx=0.5, rely=0.3, anchor="center")
+
+    #Entrada contraseña universal
+    contraUniE = ctk.CTkEntry(primerInicio, placeholder_text="Contraseña", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    contraUniE.place(relx=0.5, rely=0.5, anchor="center")
+
+    #Entrada contraseña universal confirmacion
+    contraUniEConf = ctk.CTkEntry(primerInicio, placeholder_text="Confirmar contraseña", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    contraUniEConf.place(relx=0.5, rely=0.6, anchor="center")
+
+    #Boton guardar contraseñas
+    boton = ctk.CTkButton(primerInicio, text="Guardar", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9",
+                          command=lambda: (pantallaCuentas(ventana, primerInicio,) and usuarios.guardarDatosD()) if manejarConf() == True else (primerInicioF(ventana, primerInicio) and errorCu()))
+    boton.place(relx=0.5, rely=0.7, relwidth=0.1, relheight=0.06, anchor="center")
+
+    #Quitar y agregar frame
+    frameQ.pack_forget()
+    primerInicio.pack(fill="both", expand=True)
+    return primerInicio
+
+
+
+#Pantalla con botones de cuentas
+def pantallaCuentas(ventana, frameQ):
+    #Frame usuarios
+    pantallaCuentas = ctk.CTkFrame(ventana, bg_color="#D9D9D9")
+
+    #Fondo de cuentas
+    bgCuentasImg = Image.open(path("img/inicio/cuentasImg.png"))
+    bgCuentasR = bgCuentasImg.resize((variablesGlobales.ancho_pantalla, variablesGlobales.alto_pantalla))
+    bgCuentasP = ImageTk.PhotoImage(bgCuentasR)
+    bgCuentasLab = ctk.CTkLabel(pantallaCuentas, image=bgCuentasP, text="", anchor="center")
+    bgCuentasLab.place(relwidth=1, relheight=1, anchor="center", relx=0.5, rely=0.5)
+
+    #Boton de usuario dueño
+    botonCD = ctk.CTkButton(pantallaCuentas, text="Cuenta de dueño", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", command=lambda: pantallaCuentaDueno(ventana, pantallaCuentas))
+    botonCD.place(relx=0.5, rely=0.4, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Boton de usuario vendedor
+    botonCV = ctk.CTkButton(pantallaCuentas, text="Cuenta de vendedor", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", command=lambda: pantallaCuentaVendedor(ventana, pantallaCuentas))
+    botonCV.place(relx=0.5, rely=0.6, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Quitar y agregar frame
+    frameQ.pack_forget()
+    pantallaCuentas.pack(fill="both", expand=True)
+    return pantallaCuentas
+
+
+
+#Pantalla de incio de sesion de dueño
+def pantallaCuentaDueno(ventana, frameQ):
+    def manejarIsesion():
+        usuarioDueno = usuarioDuenoE.get()
+        contraDueno = contraDuenoE.get()
+        return usuarios.incioSesionD(usuarioDueno, contraDueno)
+    
+    def errorContrasena():
+        errorC = ctk.CTkLabel(pantallaCuentaDueno, text="Error, contraseña incorrecta o campo vacio", text_color="red", font=("Ubuntu", 20), bg_color="#D9D9D9")
+        errorC.place(relx=0.5, rely=0.45, anchor="center")
+    
+    #Frame usuarios
+    pantallaCuentaDueno = ctk.CTkFrame(ventana, bg_color="#D9D9D9")
+
+    #Fondo de cuentas
+    bgCuentasImg = Image.open(path("img/inicio/cuentasImg.png"))
+    bgCuentasR = bgCuentasImg.resize((variablesGlobales.ancho_pantalla, variablesGlobales.alto_pantalla))
+    bgCuentasP = ImageTk.PhotoImage(bgCuentasR)
+    bgCuentasLab = ctk.CTkLabel(pantallaCuentaDueno, image=bgCuentasP, text="", anchor="center")
+    bgCuentasLab.place(relwidth=1, relheight=1, anchor="center", relx=0.5, rely=0.5)
+
+    #Texto de titulo
+    textoT = ctk.CTkLabel(pantallaCuentaDueno, text="Cuenta de dueño", text_color="black", bg_color="#D9D9D9", font=("Ubuntu", 30, "bold"))
+    textoT.place(relx=0.5, rely=0.3, anchor="center")
+
+    #Entrada usuario dueño
+    usuarioDuenoE = ctk.CTkEntry(pantallaCuentaDueno, placeholder_text="Usuario", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black")
+    usuarioDuenoE.place(relx=0.5, rely=0.4, anchor="center")
+
+    #Entrada contraseña
+    contraDuenoE = ctk.CTkEntry(pantallaCuentaDueno, placeholder_text="Contraseña", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    contraDuenoE.place(relx=0.5, rely=0.5, anchor="center")
+
+    #Boton regresar
+    botonRegresar = ctk.CTkButton(pantallaCuentaDueno, text="Regresar", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=flechaIcono, compound="left", command=lambda: pantallaCuentas(ventana, pantallaCuentaDueno))
+    botonRegresar.place(relx=0.3, rely=0.72, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Boton registrar cuenta
+    botonIsesion = ctk.CTkButton(pantallaCuentaDueno, text="Registrar cuenta", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=variablesGlobales.inicioSIcono, compound="left",
+                                 command=lambda: registrarDueno(ventana, pantallaCuentaDueno))
+    botonIsesion.place(relx=0.7, rely=0.72, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Boton iniciar sesion
+    botonRdueno = ctk.CTkButton(pantallaCuentaDueno, text="Iniciar sesion", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=variablesGlobales.inicioSIcono, compound="left",
+                                 command=lambda: menuDueno.pantallaDueno(ventana, pantallaCuentaDueno) and listasDueno.iniciarDueno() if manejarIsesion() == True else errorContrasena())
+    botonRdueno.place(relx=0.5, rely=0.65, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Quitar y agregar frame
+    frameQ.pack_forget()
+    pantallaCuentaDueno.pack(fill="both", expand=True)
+    return pantallaCuentaDueno
+
+
+
+def registrarDueno(ventana, frameQ):
+    def manejarConf():
+        contra = contraDuenoE.get()
+        contraC = contraDuenoEc.get()
+        return usuarios.verificarContraseña(contra, contraC)
+    
+    def errorContrasena():
+        errorC = ctk.CTkLabel(pantallaDuenoR, text="Error, contraseña vacia o confirmacion invalida", text_color="red", font=("Ubuntu", 20), bg_color="#D9D9D9")
+        errorC.place(relx=0.5, rely=0.45, anchor="center")
+    
+    #Frame registrar dueño
+    pantallaDuenoR = ctk.CTkFrame(ventana, bg_color="#D9D9D9")
+
+    #Fondo de pantalla
+    bgImg = Image.open(path("img/inicio/cuentasImg.png"))
+    bgR = bgImg.resize((variablesGlobales.ancho_pantalla, variablesGlobales.alto_pantalla))
+    bgP = ImageTk.PhotoImage(bgR)
+    bgLab = ctk.CTkLabel(pantallaDuenoR, image=bgP, text="", anchor="center")
+    bgLab.place(relwidth=1, relheight=1, anchor="center", relx=0.5, rely=0.5)
+
+    #Texto de titulo
+    textoT = ctk.CTkLabel(pantallaDuenoR, text="Cuenta de dueño", text_color="black", bg_color="#D9D9D9", font=("Ubuntu", 30, "bold"))
+    textoT.place(relx=0.5, rely=0.25, anchor="center")
+
+
+    #Entrada contraseña universal
+    ContraU = ctk.CTkEntry(pantallaDuenoR, placeholder_text="Comtraseña universal", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    ContraU.place(relx=0.5, rely=0.3, anchor="center")
+
+    #Entrada usuario dueño
+    usuarioDuenoE = ctk.CTkEntry(pantallaDuenoR, placeholder_text="Usuario", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black")
+    usuarioDuenoE.place(relx=0.5, rely=0.4, anchor="center")
+
+    #Entrada contraseña
+    contraDuenoE = ctk.CTkEntry(pantallaDuenoR, placeholder_text="Contraseña", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    contraDuenoE.place(relx=0.5, rely=0.5, anchor="center")
+
+     #Entrada contraseña
+    contraDuenoEc = ctk.CTkEntry(pantallaDuenoR, placeholder_text="Confirmar contraseña", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    contraDuenoEc.place(relx=0.5, rely=0.6, anchor="center")
+
+    #Boton registrar
+    botonR = ctk.CTkButton(pantallaDuenoR, text="Registrar", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=variablesGlobales.inicioSIcono, compound="left",
+                           command=lambda: (messagebox.showinfo("Registro", "Cuenta registrada") and usuarios.registrarDueno(usuarioDuenoE.get(), contraDuenoE.get()) and pantallaCuentaDueno(ventana, pantallaDuenoR)) if (manejarConf() == True and usuarios.confirmarContraU(ContraU.get()) == True) else errorContrasena())
+    botonR.place(relx=0.5, rely=0.7, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Boton regresar
+    botonRegresar = ctk.CTkButton(pantallaDuenoR, text="Regresar", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=flechaIcono, compound="left", command=lambda: pantallaCuentaDueno(ventana, pantallaDuenoR))
+    botonRegresar.place(relx=0.3, rely=0.8, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Quitar y agregar frame
+    frameQ.pack_forget()
+    pantallaDuenoR.pack(fill="both", expand=True)
+    return pantallaDuenoR
+
+
+
+def pantallaCuentaVendedor(ventana, frameQ):
+    def manejarIsesion():
+        usuarioVendedor = usuarioVendedorE.get()
+        contraVendedor = contraVendedorE.get()
+        return usuarios.incioSesionV(usuarioVendedor, contraVendedor)
+    
+    def errorContrasena():
+        errorC = ctk.CTkLabel(pantallaCuentaVendedor, text="Error, contraseña incorrecta o campo vacio", text_color="red", font=("Ubuntu", 20), bg_color="#D9D9D9")
+        errorC.place(relx=0.5, rely=0.45, anchor="center")
+
+    def obtenerEntradaSimon():
+        usuarioVendedor = usuarioVendedorE.get()
+        contraVendedor = contraVendedorE.get()
+
+        if usuarioVendedor == "Simon" and contraVendedor == "here":
+            return True
+        else: return False
+    
+    #Frame usuarios
+    pantallaCuentaVendedor = ctk.CTkFrame(ventana, bg_color="#D9D9D9")
+
+    #Fondo de cuentas
+    bgCuentasImg = Image.open(path("img/inicio/cuentasImg.png"))
+    bgCuentasR = bgCuentasImg.resize((variablesGlobales.ancho_pantalla, variablesGlobales.alto_pantalla))
+    bgCuentasP = ImageTk.PhotoImage(bgCuentasR)
+    bgCuentasLab = ctk.CTkLabel(pantallaCuentaVendedor, image=bgCuentasP, text="", anchor="center")
+    bgCuentasLab.place(relwidth=1, relheight=1, anchor="center", relx=0.5, rely=0.5)
+
+    #Texto de titulo
+    textoT = ctk.CTkLabel(pantallaCuentaVendedor, text="Cuenta de vendedor", text_color="black", bg_color="#D9D9D9", font=("Ubuntu", 30, "bold"))
+    textoT.place(relx=0.5, rely=0.3, anchor="center")
+
+    #Entrada usuario dueño
+    usuarioVendedorE = ctk.CTkEntry(pantallaCuentaVendedor, placeholder_text="Usuario", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black")
+    usuarioVendedorE.place(relx=0.5, rely=0.4, anchor="center")
+
+    #Entrada contraseña
+    contraVendedorE = ctk.CTkEntry(pantallaCuentaVendedor, placeholder_text="Contraseña", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    contraVendedorE.place(relx=0.5, rely=0.5, anchor="center")
+
+    #Boton regresar
+    botonRegresar = ctk.CTkButton(pantallaCuentaVendedor, text="Regresar", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=flechaIcono, compound="left", command=lambda: pantallaCuentas(ventana, pantallaCuentaVendedor))
+    botonRegresar.place(relx=0.3, rely=0.72, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Boton registrar cuenta
+    botonIsesion = ctk.CTkButton(pantallaCuentaVendedor, text="Registrar cuenta", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=variablesGlobales.inicioSIcono, compound="left",
+                                 command=lambda: registrarVendedor(ventana, pantallaCuentaVendedor))
+    botonIsesion.place(relx=0.7, rely=0.72, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Boton iniciar sesion
+    botonRdueno = ctk.CTkButton(pantallaCuentaVendedor, text="Iniciar sesion", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=variablesGlobales.inicioSIcono, compound="left",
+                                 command=lambda: menuVendedor.pantallaVendedor(ventana, pantallaCuentaVendedor) and listasVendedor.iniciarVendedor() if manejarIsesion() == True else(video_simon() if obtenerEntradaSimon() == True else errorContrasena()))
+    botonRdueno.place(relx=0.5, rely=0.65, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Quitar y agregar frame
+    frameQ.pack_forget()
+    pantallaCuentaVendedor.pack(fill="both", expand=True)
+    return pantallaCuentaVendedor
+
+
+
+def registrarVendedor(ventana, frameQ):
+    def manejarConf():
+        contra = contraDuenoE.get()
+        contraC = contraDuenoEc.get()
+        return usuarios.verificarContraseña(contra, contraC)
+    
+    def errorContrasena():
+        errorC = ctk.CTkLabel(pantallaDuenoR, text="Error, contraseña vacia o confirmacion invalida", text_color="red", font=("Ubuntu", 20), bg_color="#D9D9D9")
+        errorC.place(relx=0.5, rely=0.45, anchor="center")
+    
+    #Frame registrar dueño
+    pantallaDuenoR = ctk.CTkFrame(ventana, bg_color="#D9D9D9")
+
+    #Fondo de pantalla
+    bgImg = Image.open(path("img/inicio/cuentasImg.png"))
+    bgR = bgImg.resize((variablesGlobales.ancho_pantalla, variablesGlobales.alto_pantalla))
+    bgP = ImageTk.PhotoImage(bgR)
+    bgLab = ctk.CTkLabel(pantallaDuenoR, image=bgP, text="", anchor="center")
+    bgLab.place(relwidth=1, relheight=1, anchor="center", relx=0.5, rely=0.5)
+
+    #Texto de titulo
+    textoT = ctk.CTkLabel(pantallaDuenoR, text="Cuenta de vendedor", text_color="black", bg_color="#D9D9D9", font=("Ubuntu", 30, "bold"))
+    textoT.place(relx=0.5, rely=0.25, anchor="center")
+
+
+    #Entrada contraseña universal
+    ContraU = ctk.CTkEntry(pantallaDuenoR, placeholder_text="Contraseña universal", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    ContraU.place(relx=0.5, rely=0.3, anchor="center")
+
+    #Entrada usuario dueño
+    usuarioDuenoE = ctk.CTkEntry(pantallaDuenoR, placeholder_text="Usuario", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black")
+    usuarioDuenoE.place(relx=0.5, rely=0.4, anchor="center")
+
+    #Entrada contraseña
+    contraDuenoE = ctk.CTkEntry(pantallaDuenoR, placeholder_text="Contraseña", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    contraDuenoE.place(relx=0.5, rely=0.5, anchor="center")
+
+     #Entrada contraseña
+    contraDuenoEc = ctk.CTkEntry(pantallaDuenoR, placeholder_text="Confirmar contraseña", placeholder_text_color="black", bg_color="#D9D9D9", width=300, height=40, fg_color="#90BEB4", border_color="#90BEB4", text_color="black", show="●")
+    contraDuenoEc.place(relx=0.5, rely=0.6, anchor="center")
+
+    #Boton registrar
+    botonR = ctk.CTkButton(pantallaDuenoR, text="Registrar", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=variablesGlobales.inicioSIcono, compound="left",
+                           command=lambda: (messagebox.showinfo("Registro", "Cuenta registrada") and usuarios.registrarVendedor(usuarioDuenoE.get(), contraDuenoE.get()) and pantallaCuentaVendedor(ventana, pantallaDuenoR)) if (manejarConf() == True and usuarios.confirmarContraU(ContraU.get()) == True) else errorContrasena())
+    botonR.place(relx=0.5, rely=0.7, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Boton regresar
+    botonRegresar = ctk.CTkButton(pantallaDuenoR, text="Regresar", font=("Roboto", 25, "bold"), border_width=0, corner_radius=30, bg_color="#D9D9D9", image=flechaIcono, compound="left", command=lambda: pantallaCuentaVendedor(ventana, pantallaDuenoR))
+    botonRegresar.place(relx=0.3, rely=0.8, relwidth=0.2, relheight=0.07, anchor="center")
+
+    #Quitar y agregar frame
+    frameQ.pack_forget()
+    pantallaDuenoR.pack(fill="both", expand=True)
+    return pantallaDuenoR
+
+def video_simon():
+    #Ventana del video    
+    video_ventana = Toplevel()
+    video_ventana.title("Video Player")
+    video_ventana.geometry("800x600")
+
+    canvas = ttk.Label(video_ventana)
+    canvas.pack(fill="both", expand=True)
+
+    if os.path.exists(VIDEOSIMON):
+        player = tkvideo(VIDEOSIMON, canvas, loop=1, size=(800, 600))
+        player.play()
+    else:
+        print("Video no encontrado")
+
+
+#Tema verde
+ctk.set_default_color_theme("green")
+ctk.set_appearance_mode("dark")
+
+#Iniciar interfaz
+#inciarInterfaz(ventana)
+#ventana.mainloop()
