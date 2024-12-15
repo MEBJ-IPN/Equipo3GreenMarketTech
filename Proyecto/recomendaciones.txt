@@ -1,0 +1,39 @@
+Recomendacion10: Monitoreo continuo, Inspecciona diariamente el estado de las frutas y verduras para detectar deterioro temprano.
+
+Recomendacion10: Ajuste de inventario, Compra cantidades adecuadas según la demanda promedio semanal.
+
+Recomendacion10: Rotación FIFO, Usa la estrategia “primero en entrar, primero en salir” para evitar que productos se queden mucho tiempo almacenados.
+
+Recomendacion10: Promociones rápidas, Ofrece descuentos para productos que están a punto de perder frescura.
+
+Recomendacion10: Capacitación básica, Capacita al personal en el manejo delicado de los productos.
+
+Recomendacion20: Ofertas al cierre, Vende los productos sobrantes al final del día con un descuento atractivo amtes que empiesen a maltratarse.
+
+Recomendacion20: Compra fraccionada, Divide las compras en dos tandas diarias (mañana y tarde) para evitar exceso de inventario si tienes tiempo para hacerlo .
+
+Recomendacion20: Frutas listas para comer, Ofrece frutas peladas o cortadas (como piñas o papayas) en empaques para el cliente final.
+
+Recomendacion20: Atención a mayoristas, Facilita descuentos a revendedores, quienes comprarán en mayor volumen.
+
+Recomendacion20: Rutas de reparto, Considera entregar pedidos a pequeños negocios locales (tienditas o restaurantes).
+
+Recomendacion30: Diversificación, Incorpora productos de menor perecibilidad como chiles secos, legumbres o frutos secos.
+
+Recomendacion30: Asociaciones con vendedores de comida, Proporciona tus excedentes a puestos de comida en el mismo mercado.
+
+Recomendacion30: Rápida rotación, Ofrece precios más bajos en los productos más maduros al inicio del día para venderlos rápido.
+
+Recomendacion30: Procesamiento en sitio, Vende jugos, licuados o ensaladas preparados directamente en tu puesto.
+
+Recomendacion30: Minimiza la exposición, No exhibas demasiados productos a la vez si no tienes alta demanda, para evitar que se maltraten con el calor o la manipulación.
+
+Recomendacion40: Cambia la estrategia de compra, Adquiere menos volumen, pero con mayor frecuencia, para evitar acumulaciones de inventario.
+
+Recomendacion40: Venta al mayoreo,  Ofrece tus excedentes a comerciantes más pequeños o tianguistas en zonas aledañas.
+
+Recomendacion40: Especialización, Concéntrate en productos de alta demanda y reduce la variedad de los menos populares para optimizar tu inventario.
+
+Recomendacion40: Revisiones constantes del inventario, Verifica tu almacen o inventario cada pocas horas y mueve los productos que están en riesgo de deterioro a áreas visibles o en ofertas destacadas.
+
+Recomendacion40:Rediseño total del inventario, Evalúa qué productos tienen mayor merma y considera reducir su compra o eliminarlos temporalmente. Enfócate en productos más resistentes, como zanahorias, papas o cítricos. 
